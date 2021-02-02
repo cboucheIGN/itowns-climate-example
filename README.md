@@ -13,7 +13,7 @@ See the example for [Paris](index.html)
 1. Export the temperature dataset to a GeoJSON
     * see this [quick guide](doc/netcdf2geojson_qgis.md)
 2. Create your Itowns scene
-    * [Itowns](http://www.itowns-project.org/) documentation
+    * [Itowns](http://www.itowns-project.org/itowns/docs/#tutorials/Create-a-simple-globe) documentation
     * [Source code](index.html) for Paris
 
 Other project in IGN look for a direct integration of NetCDF data in Itowns. We will update this guide.
