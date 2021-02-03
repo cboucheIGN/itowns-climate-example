@@ -6,15 +6,9 @@ The processus would be the same to render other NetCDF feature as the wind.
 
 ## Example
 
-See the example for [Paris](index.html)
+See the example for [Paris](https://cboucheign.github.io/netcdf-itowns/)
 
-### How to use
-
-With npm, in your project:
-
-```
-npm install
-```
+> [Source code here](index.html)
 
 ## Overview
 

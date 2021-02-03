@@ -55,7 +55,7 @@
             });
             view.tileLayer.maxSubdivisionLevel = 18;
             view.tileLayer.minSubdivisionLevel = 0;
-            view.isDebugMode = true;
+            view.isDebugMode = false;
             setupLoadingScreen(viewerDiv, view);
 
 
@@ -92,7 +92,7 @@
                 source: wmsImagerySource_icu_hot_summer_1,
             });
             wmsImageryLayer_icu_hot_summer_1.opacity = 0.5;
-            wmsImageryLayer_icu_hot_summer_1.visible = true;
+            wmsImageryLayer_icu_hot_summer_1.visible = false;
 
             view.addLayer(wmsImageryLayer_icu_hot_summer_1);
 
@@ -189,7 +189,7 @@
             {
                 onMeshCreated: function(mesh){
                     mesh.material.size = 100;
-                    }
+                }
             });
             Temperature.update = itowns.FeatureProcessing.update;
             Temperature.convert = itowns.Feature2Mesh.convert({
@@ -243,7 +243,7 @@
                 projection: 'EPSG:2154',
                 ipr: 'IGN',
                 format: 'application/json',
-                zoom: { min: 8, max: 8  },
+                zoom: { min: 6, max: 10  },
                 extent: extentBati,
             });
             var wfsBuildingLayer = new itowns.GeometryLayer('wfsBuilding', new itowns.THREE.Group(), {
@@ -270,7 +270,7 @@
                 menuGlobe = new GuiTools('menuDiv', view);
                 menuGlobe.addImageryLayersGUI(view.getLayers(function gui(l) { return l.isColorLayer; }));
                 menuGlobe.addElevationLayerGUI(layerMNT);
-                debug.createTileDebugUI(menuGlobe.gui, view);
+                // debug.createTileDebugUI(menuGlobe.gui, view);
             }
         </script>
     </body>
