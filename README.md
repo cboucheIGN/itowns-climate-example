@@ -4,22 +4,30 @@ This following projet show you the processus to make a web base visualization of
 
 The processus would be the same to render other NetCDF feature as the wind.
 
-[TOC]
-
 ## Example
 
 See the example for [Paris](index.html)
 
+### How to use
+
+With npm, in your project:
+
+```
+npm install
+```
+
 ## Overview
 
-1. Export the temperature dataset to a GeoJSON
-2. Create your Itowns scene
+1. [Export the temperature dataset to a GeoJSON](#extract)
+2. [Create your Itowns scene](#itowns)
     * [Source code](index.html) for Paris
     * [Itowns](http://www.itowns-project.org/itowns/docs/#tutorials/Create-a-simple-globe) documentation
 
 Other project in IGN look for a direct integration of NetCDF data in Itowns. We will update this guide.
 
-## 1. Extract NetCDF temperature to GeoJson
+<a id="extract"></a>
+
+## Extract NetCDF temperature to GeoJson
 
 ### 1.1 CSV using QGIS
 
@@ -37,19 +45,18 @@ In QGIS 3.* (NetCDF Browser peut-être à installer moi j'ai pas eu besoin)
    * see [QGIS documentation](https://docs.qgis.org/3.16/en/docs/user_manual/processing_algs/qgis/vectorcreation.html#raster-pixels-to-points)
 
 3. Merge attributes from each channel (latitude, longitude, TEB...) to each point
-   * avec Point Sampling Tool
+   * using Point Sampling Tool
 
-4. Save the regular grid in CSV. Then load it again using latitude and longitude attributes. You can use a local projection.
+4. Save the regular grid in CSV. Then load it again using latitude and longitude attributes (WGS:84).
 
 ### 1.2 CSV to GeoJSON
 
-Use the following [script](../data/csv2geoJson.py) with your files
-
-Then you can use this file to create the 3D scene with [Itowns](../README.md)
+Edit the following [script](../data/csv2geoJson.py) with your csv files.
 
 ### 1.3 Appendix : compute Meso-NH and TEB height
 
 Calculer l’altitude des niveaux Meso-NH et TEB.
+
 1.	Calculer l’altitude DE LA BASE (POINTS W) des niveaux Meso-NH à l’aide de la formule de Galchen à partir des valeurs de 
     * ZS (altitude du sol)
     * XZHAT (hauteur DE LA BASE (POINTS W) des niveaux Meso-NH au-dessus du sol, ZHAT dans le NetCDF)
@@ -58,7 +65,9 @@ Calculer l’altitude des niveaux Meso-NH et TEB.
 3.	Le niveau Meso-NH 1 n’est pas à représenter.
 4.	A partir de l’altitude du centre du niveau Meso-NH 2, et de la hauteur au-dessus du vrai sol des niveaux TEB (TEB_CAN_Z0X dans le NetCDF), calculer l’altitude des centres des différents niveaux TEB.
 
-## 2. Itowns script
+<a id="extract"></a>
+
+## Itowns 3D scene
 
 Create a new Scene 
 
@@ -164,3 +173,8 @@ view.addLayer(Temperature).then(function menu(layer) {
     debug.GeometryDebug.addWireFrameCheckbox(gui, view, layer);
 });
 ```
+
+## License
+
+> TODO
+
