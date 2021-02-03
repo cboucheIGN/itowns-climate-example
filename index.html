@@ -204,7 +204,7 @@
                 });
              // Use a FileSource to load a single file once
              Temperature.source = new itowns.FileSource({
-                url: 'data/lambert_O_paris_centre.geojson',
+                url: 'https://raw.githubusercontent.com/cboucheIGN/netcdf-itowns/master/data/lambert_O_paris_centre.geojson',
                 projection: 'EPSG:2154',
                 format: 'application/json',
                 zoom: { min: 0, max: 10 },
