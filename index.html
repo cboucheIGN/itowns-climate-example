@@ -1,277 +1,271 @@
 <html>
-    <head>
-        <title>Itowns - Urclim</title>
+  <head>
+    <title>Itowns - Urclim</title>
 
-        <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="examples/css/example.css">
-        <link rel="stylesheet" type="text/css" href="examples/css/LoadingScreen.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="examples/css/example.css">
+    <link rel="stylesheet" type="text/css" href="examples/css/LoadingScreen.css">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
-    </head>
-    <body>
-        <!-- <div id="description">
-            Key bindings
-            <ul>
-              <li>Left-Click: camera translation (drag)</li>
-              <li>Right-Click: camera translation (pan)</li>
-              <li>Ctrl + Left-Click: camera rotation (orbit)</li>
-              <li>Spacebar / Wheel-Click: smart zoom</li>
-              <li>Mouse Wheel: zoom in/out</li>
-              <li>T: orient camera to a top view</li>
-              <li>Y: move camera to start position</li>
-            </ul>
-        </div> -->
-        <div id="viewerDiv" class="viewer"></div>
-        <script src="dist/itowns.js"></script>
-        <script src="examples/js/GUI/LoadingScreen.js"></script>
-        <script src="dist/debug.js"></script>
-        <script src="examples/js/GUI/GuiTools.js"></script>
-        <script type="text/javascript">
-            itowns.proj4.defs('EPSG:2154', '+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+  </head>
+  <body>
+    <!-- <div id="description">
+        Key bindings
+        <ul>
+          <li>Left-Click: camera translation (drag)</li>
+          <li>Right-Click: camera translation (pan)</li>
+          <li>Ctrl + Left-Click: camera rotation (orbit)</li>
+          <li>Spacebar / Wheel-Click: smart zoom</li>
+          <li>Mouse Wheel: zoom in/out</li>
+          <li>T: orient camera to a top view</li>
+          <li>Y: move camera to start position</li>
+        </ul>
+    </div> -->
+    <div id="viewerDiv" class="viewer"></div>
+    <script src="dist/itowns.js"></script>
+    <script src="examples/js/GUI/LoadingScreen.js"></script>
+    <script src="dist/debug.js"></script>
+    <script src="examples/js/GUI/GuiTools.js"></script>
+    <script type="text/javascript">
+      itowns.proj4.defs('EPSG:2154', '+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
 
-            var extent;
-            var viewerDiv;
-            var view;
-            var p;
-            var menuGlobe;
-            var d;
+      var extent;
+      var viewerDiv;
+      var view;
+      var p;
+      var menuGlobe;
+      var d;
 
-            // Define geographic extent: CRS, min/max X, min/max Y
-            extentBati = new itowns.Extent('EPSG:2154',
-                649500.0 - 5000 , 654499.99 + 5000,
-                6867500.0 - 10000, 6872499.99 - 5000);
-            extent = new itowns.Extent('EPSG:2154',
-                649500.0 - 50000 , 654499.99 + 50000 ,
-                6867500.0 - 100000, 6872499.99 + 50000);
+      // Define geographic extent: CRS, min/max X, min/max Y
+      extentBati = new itowns.Extent('EPSG:2154',
+          649500.0 - 5000 , 654499.99 + 5000,
+          6867500.0 - 10000, 6872499.99 - 5000);
+      extent = new itowns.Extent('EPSG:2154',
+          649500.0 - 50000 , 654499.99 + 50000 ,
+          6867500.0 - 100000, 6872499.99 + 50000);
 
-            // `viewerDiv` will contain iTowns' rendering area (`<canvas>`)
-            viewerDiv = document.getElementById('viewerDiv');
+      // `viewerDiv` will contain iTowns' rendering area (`<canvas>`)
+      viewerDiv = document.getElementById('viewerDiv');
 
-            // Instanciate PlanarView*
-            view = new itowns.PlanarView(viewerDiv, extent, {
-                disableSkirt: true,
-                placement: { heading: 0, range: 4000, tilt: 45 }
-            });
-            view.tileLayer.maxSubdivisionLevel = 18;
-            view.tileLayer.minSubdivisionLevel = 0;
-            view.isDebugMode = false;
-            setupLoadingScreen(viewerDiv, view);
+      // Instanciate PlanarView*
+      view = new itowns.PlanarView(viewerDiv, extent, {
+          disableSkirt: true,
+          placement: { heading: 0, range: 4000, tilt: 45 }
+      });
+      view.tileLayer.maxSubdivisionLevel = 18;
+      view.tileLayer.minSubdivisionLevel = 0;
+      // view.isDebugMode = false;
+      setupLoadingScreen(viewerDiv, view);
 
+      const sourceOrtho = new itowns.WMSSource({
+          url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
+          version: "1.3.0",
+          name: "HR.ORTHOIMAGERY.ORTHOPHOTOS",
+          style: "",
+          format: "image/jpeg",
+          crs: 'EPSG:2154',
+          extent: extent,
+          zoom: { min: 0, max: 14 },
+      });
+      const layerOrtho = new itowns.ColorLayer('Ortho', { source: sourceOrtho });
+      view.addLayer(layerOrtho);
 
-            const sourceOrtho = new itowns.WMSSource({
-                url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
-                version: "1.3.0",
-                name: "HR.ORTHOIMAGERY.ORTHOPHOTOS",
-                style: "",
-                format: "image/jpeg",
-                projection: 'EPSG:2154',
-                extent: extent,
-                zoom: { min: 0, max: 14 },
-            });
-            const layerOrtho = new itowns.ColorLayer('Ortho', { source: sourceOrtho });
-            view.addLayer(layerOrtho);
+      // Add a WMS imagery source
+      var wmsImagerySource_icu_hot_summer_1 = new itowns.WMSSource({
+          extent: extent,
+          name: 'icu_hot_summer_1',
+          url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
+          version: '1.3.0',
+          crs: 'EPSG:2154',
+          format: 'image/jpeg',
+          zoom: { min: 0, max: 14 },
+      });
 
-            // Add a WMS imagery source
-            var wmsImagerySource_icu_hot_summer_1 = new itowns.WMSSource({
-                extent: extent,
-                name: 'icu_hot_summer_1',
-                url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
-                version: '1.3.0',
-                projection: 'EPSG:2154',
-                format: 'image/jpeg',
-                zoom: { min: 0, max: 14 },
-            });
+      // Add a WMS imagery layer
+      var wmsImageryLayer_icu_hot_summer_1 = new itowns.ColorLayer('Ilot de chaleur urbain - ETE 1', {
+          updateStrategy: {
+              type: itowns.STRATEGY_DICHOTOMY,
+              options: {},
+          },
+          source: wmsImagerySource_icu_hot_summer_1,
+          opacity: 0.5,
+          visible: false,
+      });
 
-            // Add a WMS imagery layer
-            var wmsImageryLayer_icu_hot_summer_1 = new itowns.ColorLayer('Ilot de chaleur urbain - ETE 1', {
-                updateStrategy: {
-                    type: itowns.STRATEGY_DICHOTOMY,
-                    options: {},
-                },
-                source: wmsImagerySource_icu_hot_summer_1,
-            });
-            wmsImageryLayer_icu_hot_summer_1.opacity = 0.5;
-            wmsImageryLayer_icu_hot_summer_1.visible = false;
+      view.addLayer(wmsImageryLayer_icu_hot_summer_1);
 
-            view.addLayer(wmsImageryLayer_icu_hot_summer_1);
+      // Add a WMS imagery source
+      var wmsImagerySource_icu_hot_summer_2 = new itowns.WMSSource({
+          extent: extent,
+          name: 'icu_hot_summer_2',
+          url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
+          networkOptions: { crossOrigin: '' },
+          version: '1.3.0',
+          crs: 'EPSG:2154',
+          format: 'image/jpeg',
+      });
 
-            // Add a WMS imagery source
-            var wmsImagerySource_icu_hot_summer_2 = new itowns.WMSSource({
-                extent: extent,
-                name: 'icu_hot_summer_2',
-                url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
-                networkOptions: { crossOrigin: '' },
-                version: '1.3.0',
-                projection: 'EPSG:2154',
-                format: 'image/jpeg',
-            });
+      // Add a WMS imagery layer
+      var wmsImageryLayer_icu_hot_summer_2 = new itowns.ColorLayer('Ilot de chaleur urbain - ETE 2', {
+          updateStrategy: {
+              type: itowns.STRATEGY_DICHOTOMY,
+              options: {},
+          },
+          source: wmsImagerySource_icu_hot_summer_2,
+          opacity: 0.5,
+          visible: false,
+      });
 
-            // Add a WMS imagery layer
-            var wmsImageryLayer_icu_hot_summer_2 = new itowns.ColorLayer('Ilot de chaleur urbain - ETE 2', {
-                updateStrategy: {
-                    type: itowns.STRATEGY_DICHOTOMY,
-                    options: {},
-                },
-                source: wmsImagerySource_icu_hot_summer_2,
-            });
-            wmsImageryLayer_icu_hot_summer_2.opacity = 0.5;
-            wmsImageryLayer_icu_hot_summer_2.visible = false;
+      view.addLayer(wmsImageryLayer_icu_hot_summer_2);
 
-            view.addLayer(wmsImageryLayer_icu_hot_summer_2);
+      // Add a WMS imagery source
+      var wmsImagerySource_usr_indicators_metropole_geom_usr_b_vol_mean = new itowns.WMSSource({
+          extent: extent,
+          name: 'usr_indicators_metropole_geom',
+          url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
+          networkOptions: { crossOrigin: '' },
+          style: 'usr_b_vol_mean',
+          version: '1.3.0',
+          crs: 'EPSG:2154',
+          format: 'image/jpeg',
+      });
 
-            // Add a WMS imagery source
-            var wmsImagerySource_usr_indicators_metropole_geom_usr_b_vol_mean = new itowns.WMSSource({
-                extent: extent,
-                name: 'usr_indicators_metropole_geom',
-                url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
-                networkOptions: { crossOrigin: '' },
-                style: 'usr_b_vol_mean',
-                version: '1.3.0',
-                projection: 'EPSG:2154',
-                format: 'image/jpeg',
-            });
+      // Add a WMS imagery layer
+      var wmsImageryLayer_usr_indicators_metropole_geom_usr_b_vol_mean = new itowns.ColorLayer('volume moyen des bâtiments', {
+          updateStrategy: {
+              type: itowns.STRATEGY_DICHOTOMY,
+              options: {},
+          },
+          source: wmsImagerySource_usr_indicators_metropole_geom_usr_b_vol_mean,
+          opacity: 0.5,
+          visible: false,
+      });
 
-            // Add a WMS imagery layer
-            var wmsImageryLayer_usr_indicators_metropole_geom_usr_b_vol_mean = new itowns.ColorLayer('volume moyen des bâtiments', {
-                updateStrategy: {
-                    type: itowns.STRATEGY_DICHOTOMY,
-                    options: {},
-                },
-                source: wmsImagerySource_usr_indicators_metropole_geom_usr_b_vol_mean,
-            });
-            wmsImageryLayer_usr_indicators_metropole_geom_usr_b_vol_mean.opacity = 0.5;
-            wmsImageryLayer_usr_indicators_metropole_geom_usr_b_vol_mean.visible = false;
+      view.addLayer(wmsImageryLayer_usr_indicators_metropole_geom_usr_b_vol_mean);
 
-            view.addLayer(wmsImageryLayer_usr_indicators_metropole_geom_usr_b_vol_mean);
+      // Add a WMS imagery source
+      var wmsImagerySource_usr_indicators_metropole_geom_usr_build_dens = new itowns.WMSSource({
+          extent: extent,
+          name: 'usr_indicators_metropole_geom',
+          url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
+          networkOptions: { crossOrigin: '' },
+          style: 'usr_build_dens',
+          version: '1.3.0',
+          crs: 'EPSG:2154',
+          format: 'image/jpeg',
+      });
 
-            // Add a WMS imagery source
-            var wmsImagerySource_usr_indicators_metropole_geom_usr_build_dens = new itowns.WMSSource({
-                extent: extent,
-                name: 'usr_indicators_metropole_geom',
-                url: 'https://geoclimate.orbisgis.org/geoserver/mapuce/wms',
-                networkOptions: { crossOrigin: '' },
-                style: 'usr_build_dens',
-                version: '1.3.0',
-                projection: 'EPSG:2154',
-                format: 'image/jpeg',
-            });
+      // Add a WMS imagery layer
+      var wmsImageryLayer_usr_indicators_metropole_geom_usr_build_dens = new itowns.ColorLayer('densité de bâtiments', {
+          updateStrategy: {
+              type: itowns.STRATEGY_DICHOTOMY,
+              options: {},
+          },
+          source: wmsImagerySource_usr_indicators_metropole_geom_usr_build_dens,
+          opacity: 0.5,
+          visible: false,
+      });
 
-            // Add a WMS imagery layer
-            var wmsImageryLayer_usr_indicators_metropole_geom_usr_build_dens = new itowns.ColorLayer('densité de bâtiments', {
-                updateStrategy: {
-                    type: itowns.STRATEGY_DICHOTOMY,
-                    options: {},
-                },
-                source: wmsImagerySource_usr_indicators_metropole_geom_usr_build_dens,
-            });
-            wmsImageryLayer_usr_indicators_metropole_geom_usr_build_dens.opacity = 0.5;
-            wmsImageryLayer_usr_indicators_metropole_geom_usr_build_dens.visible = false;
+      view.addLayer(wmsImageryLayer_usr_indicators_metropole_geom_usr_build_dens);
 
-            view.addLayer(wmsImageryLayer_usr_indicators_metropole_geom_usr_build_dens);
+      // On ajoute un flux WMS pour le MNT du Geoportail (il n'y a pas de flux MNT en WMTS dispo)
+      const sourceMNT = new itowns.WMSSource({
+          url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
+          version: "1.3.0",
+          name: "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
+          style: "",
+          format: "image/x-bil;bits=32",
+          crs: 'EPSG:2154',
+          extent: extent,
+          zoom: { min: 0, max: 14 },
+      });
+      const layerMNT = new itowns.ElevationLayer('MNT', { source: sourceMNT });
+      view.addLayer(layerMNT);
 
-            // On ajoute un flux WMS pour le MNT du Geoportail (il n'y a pas de flux MNT en WMTS dispo)
-            const sourceMNT = new itowns.WMSSource({
-                url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
-                version: "1.3.0",
-                name: "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
-                style: "",
-                format: "image/x-bil;bits=32",
-                projection: 'EPSG:2154',
-                extent: extent,
-                zoom: { min: 0, max: 14 },
-            });
-            const layerMNT = new itowns.ElevationLayer('MNT', { source: sourceMNT });
-            view.addLayer(layerMNT);
+      // Add a geometry layer, which will contain the points to display
+      var Temperature = new itowns.GeometryLayer('Temperature', new itowns.THREE.Group(),
+      {
+          onMeshCreated: function(mesh){
+              mesh.material.size = 100;
+          },
+          source: new itowns.FileSource({
+              url: '/data/lambert_O_paris_centre.geojson',
+              crs: 'EPSG:2154',
+              format: 'application/json',
+          }),
+          crs: 'EPSG:2154',
+          update: itowns.FeatureProcessing.update,
+          convert: itowns.Feature2Mesh.convert({
+              color: function(p){d
+                  const tempMin = 290;
+                  const tempMax = 330;
+                  const Blue = new itowns.THREE.Color("rgb(0, 0, 255)");
+                  const Red = new itowns.THREE.Color("rgb(255, 0, 0)");
+                  const alpha = Math.min(255, Math.max(0,(p.temp-tempMin)/(tempMax-tempMin)));
+                  return Blue.lerpHSL(Red, alpha);
+              }
+          }),
+          zoom: { min: 0 },
+      });
 
-            // Add a geometry layer, which will contain the points to display
-            var Temperature = new itowns.GeometryLayer('Temperature', new itowns.THREE.Group(), 
-            {
-                onMeshCreated: function(mesh){
-                    mesh.material.size = 100;
-                }
-            });
-            Temperature.update = itowns.FeatureProcessing.update;
-            Temperature.convert = itowns.Feature2Mesh.convert({
-                color: function(p){
-                    const tempMin = 290;
-                    const tempMax = 330;
-                    const Blue = new itowns.THREE.Color("rgb(0, 0, 255)");
-                    const Red = new itowns.THREE.Color("rgb(255, 0, 0)");
-                    const alpha = Math.min(255, Math.max(0,(p.temp-tempMin)/(tempMax-tempMin)));
-                    return Blue.lerpHSL(Red, alpha);
-                }
-                });
-             // Use a FileSource to load a single file once
-             Temperature.source = new itowns.FileSource({
-                url: 'https://raw.githubusercontent.com/cboucheIGN/netcdf-itowns/master/data/lambert_O_paris_centre.geojson',
-                projection: 'EPSG:2154',
-                format: 'application/json',
-                zoom: { min: 0, max: 10 },
-            });
+      view.addLayer(Temperature).then(function menu(layer) {
+          var gui = debug.GeometryDebug.createGeometryDebugUI(menuGlobe.gui, view, layer);
+          debug.GeometryDebug.addWireFrameCheckbox(gui, view, layer);
+      });
 
+      var color = new itowns.THREE.Color();
+      function colorBuildings(properties) {
+          if (properties.id.indexOf('bati_remarquable') === 0) {
+              return color.set(0x5555ff);
+          } else if (properties.id.indexOf('bati_industriel') === 0) {
+              return color.set(0xff5555);
+          }
+          return color.set(0xeeeeee);
+      }
+      function altitudeBuildings(properties) {
+          return properties.z_min - properties.hauteur;
+      }
+      function extrudeBuildings(properties) {
+          return properties.hauteur;
+      }
+      function acceptFeature(properties) {
+          return !!properties.hauteur;
+      }
 
-            view.addLayer(Temperature).then(function menu(layer) {
-                var gui = debug.GeometryDebug.createGeometryDebugUI(menuGlobe.gui, view, layer);
-                debug.GeometryDebug.addWireFrameCheckbox(gui, view, layer);
-            });
+      var wfsBuildingSource = new itowns.WFSSource({
+          url: 'https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/wfs?',
+          version: '2.0.0',
+          typeName: 'BDTOPO_BDD_WLD_WGS84G:bati_remarquable,BDTOPO_BDD_WLD_WGS84G:bati_indifferencie,BDTOPO_BDD_WLD_WGS84G:bati_industriel',
+          crs: 'EPSG:4326',
+          ipr: 'IGN',
+          format: 'application/json',
+          extent: extent,
+      });
+      var wfsBuildingLayer = new itowns.GeometryLayer('wfsBuilding', new itowns.THREE.Group(), {
+          update: itowns.FeatureProcessing.update,
+          convert: itowns.Feature2Mesh.convert({
+              color: colorBuildings,
+              altitude: altitudeBuildings,
+              extrude: extrudeBuildings }),
+          filter: acceptFeature,
+          overrideAltitudeInToZero: true,
+          source: wfsBuildingSource,
+          crs: 'EPSG:2154',
+          zoom: { min: 8 },
+      });
+      view.addLayer(wfsBuildingLayer);
 
+      // Request redraw
+      view.notifyChange();
 
-            var color = new itowns.THREE.Color();
-            function colorBuildings(properties) {
-                if (properties.id.indexOf('bati_remarquable') === 0) {
-                    return color.set(0x5555ff);
-                } else if (properties.id.indexOf('bati_industriel') === 0) {
-                    return color.set(0xff5555);
-                }
-                return color.set(0xeeeeee);
-            }
-            function altitudeBuildings(properties) {
-                return properties.z_min - properties.hauteur;
-            }
-            function extrudeBuildings(properties) {
-                return properties.hauteur;
-            }
-            function acceptFeature(properties) {
-                return !!properties.hauteur;
-            }
-
-            var wfsBuildingSource = new itowns.WFSSource({
-                url: 'https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/wfs?',
-                version: '2.0.0',
-                typeName: 'BDTOPO_BDD_WLD_WGS84G:bati_remarquable,BDTOPO_BDD_WLD_WGS84G:bati_indifferencie,BDTOPO_BDD_WLD_WGS84G:bati_industriel',
-                projection: 'EPSG:2154',
-                ipr: 'IGN',
-                format: 'application/json',
-                zoom: { min: 9 },
-                extent: extentBati,
-            });
-            var wfsBuildingLayer = new itowns.GeometryLayer('wfsBuilding', new itowns.THREE.Group(), {
-                update: itowns.FeatureProcessing.update,
-                convert: itowns.Feature2Mesh.convert({
-                    color: colorBuildings,
-                    altitude: altitudeBuildings,
-                    extrude: extrudeBuildings }),
-                filter: acceptFeature,
-                overrideAltitudeInToZero: true,
-                source: wfsBuildingSource,
-            });
-            view.addLayer(wfsBuildingLayer);
-
-            // instanciate controls
-            // eslint-disable-next-line no-new
-            new itowns.PlanarControls(view, {});
-
-            // Request redraw
-            view.notifyChange();
-
-            // if (view.isDebugMode) 
-            {
-                menuGlobe = new GuiTools('menuDiv', view);
-                menuGlobe.addImageryLayersGUI(view.getLayers(function gui(l) { return l.isColorLayer; }));
-                menuGlobe.addElevationLayerGUI(layerMNT);
-                // debug.createTileDebugUI(menuGlobe.gui, view);
-            }
-        </script>
-    </body>
+      // if (view.isDebugMode)
+      {
+          menuGlobe = new GuiTools('menuDiv', view);
+          menuGlobe.addImageryLayersGUI(view.getLayers(function gui(l) { return l.isColorLayer; }));
+          menuGlobe.addElevationLayerGUI(layerMNT);
+          // debug.createTileDebugUI(menuGlobe.gui, view);
+      }
+    </script>
+  </body>
 </html>
