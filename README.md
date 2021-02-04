@@ -49,15 +49,15 @@ Edit the following [script](../data/csv2geoJson.py) with your csv files.
 
 ### 1.3 Appendix : compute Meso-NH and TEB height
 
-Calculer l’altitude des niveaux Meso-NH et TEB.
+Calculate the altitude of Meso-NH and TEB levels.
 
-1.	Calculer l’altitude DE LA BASE (POINTS W) des niveaux Meso-NH à l’aide de la formule de Galchen à partir des valeurs de 
-    * ZS (altitude du sol)
-    * XZHAT (hauteur DE LA BASE (POINTS W) des niveaux Meso-NH au-dessus du sol, ZHAT dans le NetCDF)
-    * H (dernière valeur de XZHAT)
-2.	Calculer l’altitude du centre du niveau Meso-NH 2 à partir des altitudes des points W des niveaux Meso NH 2 et 3. L’altitude du centre du niveau Meso-NH 2 est identique à l’altitude du centre du niveau TEB 6. 
-3.	Le niveau Meso-NH 1 n’est pas à représenter.
-4.	A partir de l’altitude du centre du niveau Meso-NH 2, et de la hauteur au-dessus du vrai sol des niveaux TEB (TEB_CAN_Z0X dans le NetCDF), calculer l’altitude des centres des différents niveaux TEB.
+1. Calculate the BASE altitude (POINTS W) of Meso-NH levels using the Galchen formula based on the values of
+    * ZS (ground altitude)
+    * XZHAT (BASE HEIGHT (POINTS W) meso-NH levels above ground, ZHAT in NetCDF)
+    * H (last value of XZHAT)
+2. Calculate the altitude of the center of Meso-NH 2 from the altitudes of the W points of Meso NH 2 and 3. The  altitude of the center of meso-NH 2 is identical to the altitude of the center of the TEB 6 level.
+3. The Meso-NH 1 level is not to be represented.
+4. From the altitude of the center of the Meso-NH 2 level, and the height above the real ground of the TEB levels (TEB_CAN_Z0X in the NetCDF), calculate the altitude of the centers of the different TEB levels.
 
 <a id="itowns"></a>
 
