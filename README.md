@@ -10,6 +10,8 @@ This is a living project and the logical steps proposed here can evolve to adapt
 
 See the example for [Paris](https://cboucheign.github.io/netcdf-itowns/)
 
+![itowns_screenshot.png](doc/itowns_screenshot.png)
+
 > [Source code here](index.html)
 
 ## Overview
@@ -19,7 +21,7 @@ See the example for [Paris](https://cboucheign.github.io/netcdf-itowns/)
     * [Source code](index.html) for Paris
     * [Itowns](http://www.itowns-project.org/itowns/docs/#tutorials/Create-a-simple-globe) documentation
 
-Other project in IGN look for a direct integration of NetCDF data in Itowns. We will update this guide.
+![overview](doc/overview.jpg)
 
 <a id="extract"></a>
 
@@ -61,11 +63,13 @@ Calculate the altitude of Meso-NH and TEB levels.
 3. The Meso-NH 1 level is not to be represented.
 4. From the altitude of the center of the Meso-NH 2 level, and the height above the real ground of the TEB levels (TEB_CAN_Z0X in the NetCDF), calculate the altitude of the centers of the different TEB levels.
 
+![compute_z](doc/compute_z.png)
+
 <a id="itowns"></a>
 
 ## Itowns 3D scene
 
-Create a new Scene 
+1. Create a new Scene 
 
 ```js
 // Instanciate PlanarView
@@ -77,7 +81,7 @@ view.tileLayer.maxSubdivisionLevel = 18;
 view.tileLayer.minSubdivisionLevel = 0;
 ```
 
-Add an elevation Layer
+2. Add an elevation Layer
 
 ```js
 // Adding MNT from Geoportail
@@ -95,7 +99,7 @@ const layerMNT = new itowns.ElevationLayer('MNT', { source: sourceMNT });
 view.addLayer(layerMNT);
 ```
 
-Add scene layer - orthophoto
+3. 1 Add scene layer - orthophoto
 
 ```js
 const sourceOrtho = new itowns.WMSSource({
@@ -112,7 +116,7 @@ const layerOrtho = new itowns.ColorLayer('Ortho', { source: sourceOrtho });
 view.addLayer(layerOrtho);
 ```
 
-Add scene layer - Buildings
+3. 2 Add scene layer - Buildings
 
 ```js
 const wfsBuildingSource = new itowns.WFSSource({
@@ -140,7 +144,7 @@ const wfsBuildingLayer = new itowns.GeometryLayer('wfsBuilding', new itowns.THRE
 view.addLayer(wfsBuildingLayer);
 ```
 
-Add a temperature layer from NetCDF data.
+4. Add a temperature layer from NetCDF data.
 
 ```js
 // Add a geometry layer, which will contain the points to display
