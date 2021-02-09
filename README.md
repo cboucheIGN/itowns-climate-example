@@ -1,8 +1,10 @@
 # Web visualization of NetCDF with Itowns
 
-This following projet show you the processus to make a web base visualization of your NetCDF temperature info.
+This project proposes a process to generate a 3D co-visualization of NetCDF climatic data with contextual geographical data on the Web. 
 
-The processus would be the same to render other NetCDF feature as the wind.
+In the example, the NetCDF data are the temperature, the contextual geographical data are served by the French geoportal which uses common GI standards, and the 3D visualization client is the open source Itowns technology. A specific feature of the project is to generate intermediate shapes from the climatic data that can rendered together with contextual data. Legible shapes and styles are defined by scientists from the Geovis Team of LaSTIG lab and integrated in this project, little by little. While current code shows the first shapes proposed by Geovis, on-going work focuses on integrating the latest shapes, like for example vertical plans.  We also aim to reproduce this process on different cities, in the context of the URCLIM project.
+
+This is a living project and the logical steps proposed here can evolve to adapt to the community suggestions, for example to integrate NetCDF directly into the client.
 
 ## Example
 
@@ -66,109 +68,110 @@ Calculate the altitude of Meso-NH and TEB levels.
 Create a new Scene 
 
 ```js
+// Instanciate PlanarView
 view = new itowns.PlanarView(viewerDiv, extent, {
-    disableSkirt: true,
-    placement: { heading: 0, range: 4000, tilt: 45 }
+  disableSkirt: true,
+  placement: { coord: new itowns.Coordinates('EPSG:2154', 653654.957, 6860967.684), heading: 30, range: 2500, tilt: 60 }
 });
 view.tileLayer.maxSubdivisionLevel = 18;
 view.tileLayer.minSubdivisionLevel = 0;
-view.isDebugMode = true;
-setupLoadingScreen(viewerDiv, view);
 ```
 
 Add an elevation Layer
 
 ```js
-// On ajoute un flux WMS pour le MNT du Geoportail (il n'y a pas de flux MNT en WMTS dispo)
+// Adding MNT from Geoportail
 const sourceMNT = new itowns.WMSSource({
-    url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
-    version: "1.3.0",
-    name: "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
-    style: "",
-    format: "image/x-bil;bits=32",
-    projection: 'EPSG:2154',
-    extent: extent,
-    zoom: { min: 0, max: 14 },
+  url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
+  version: "1.3.0",
+  name: "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
+  style: "",
+  format: "image/x-bil;bits=32",
+  crs: 'EPSG:2154',
+  extent: extent,
+  zoom: { min: 0, max: 14 }
 });
 const layerMNT = new itowns.ElevationLayer('MNT', { source: sourceMNT });
 view.addLayer(layerMNT);
 ```
 
-Add scene layer (orthophoto and urban buildings)
-
+Add scene layer - orthophoto
 
 ```js
 const sourceOrtho = new itowns.WMSSource({
-    url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
-    version: "1.3.0",
-    name: "HR.ORTHOIMAGERY.ORTHOPHOTOS",
-    style: "",
-    format: "image/jpeg",
-    projection: 'EPSG:2154',
-    extent: extent,
-    zoom: { min: 0, max: 14 },
+  url: "https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/r/wms",
+  version: "1.3.0",
+  name: "HR.ORTHOIMAGERY.ORTHOPHOTOS",
+  style: "",
+  format: "image/jpeg",
+  crs: 'EPSG:2154',
+  extent: extent,
+  zoom: { min: 0, max: 14 }
 });
 const layerOrtho = new itowns.ColorLayer('Ortho', { source: sourceOrtho });
 view.addLayer(layerOrtho);
+```
 
-var wfsBuildingSource = new itowns.WFSSource({
-    url: 'https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/wfs?',
-    version: '2.0.0',
-    typeName: 'BDTOPO_BDD_WLD_WGS84G:bati_remarquable,BDTOPO_BDD_WLD_WGS84G:bati_indifferencie,BDTOPO_BDD_WLD_WGS84G:bati_industriel',
-    projection: 'EPSG:2154',
-    ipr: 'IGN',
-    format: 'application/json',
-    zoom: { min: 8, max: 8  },
-    extent: extentBati,
+Add scene layer - Buildings
+
+```js
+const wfsBuildingSource = new itowns.WFSSource({
+  url: 'https://wxs.ign.fr/3ht7xcw6f7nciopo16etuqp2/geoportail/wfs?',
+  version: '2.0.0',
+  typeName: 'BDTOPO_BDD_WLD_WGS84G:bati_remarquable,BDTOPO_BDD_WLD_WGS84G:bati_indifferencie,BDTOPO_BDD_WLD_WGS84G:bati_industriel',
+  crs: 'EPSG:4326',
+  ipr: 'IGN',
+  format: 'application/json',
+  extent: extent
 });
-var wfsBuildingLayer = new itowns.GeometryLayer('wfsBuilding', new itowns.THREE.Group(), {
-    update: itowns.FeatureProcessing.update,
-    convert: itowns.Feature2Mesh.convert({
-        color: colorBuildings,
-        altitude: altitudeBuildings,
-        extrude: extrudeBuildings }),
-    filter: acceptFeature,
-    overrideAltitudeInToZero: true,
-    source: wfsBuildingSource,
+const wfsBuildingLayer = new itowns.GeometryLayer('wfsBuilding', new itowns.THREE.Group(), {
+  update: itowns.FeatureProcessing.update,
+  convert: itowns.Feature2Mesh.convert({
+    color: colorBuildings,
+    altitude: altitudeBuildings,
+    extrude: extrudeBuildings
+  }),
+  filter: acceptFeature,
+  overrideAltitudeInToZero: true,
+  source: wfsBuildingSource,
+  crs: 'EPSG:2154',
+  zoom: { min: 8 }
 });
 view.addLayer(wfsBuildingLayer);
 ```
 
-Add a temperature layer
+Add a temperature layer from NetCDF data.
 
 ```js
 // Add a geometry layer, which will contain the points to display
-var Temperature = new itowns.GeometryLayer('Temperature', new itowns.THREE.Group(), 
+const Temperature = new itowns.GeometryLayer('Temperature', new itowns.THREE.Group(),
 {
-    onMeshCreated: function(mesh){
-        mesh.material.size = 100;
-        }
-});
-Temperature.update = itowns.FeatureProcessing.update;
-Temperature.convert = itowns.Feature2Mesh.convert({
-    color: function(p){
-        const tempMin = 290;
-        const tempMax = 330;
-        const Blue = new itowns.THREE.Color("rgb(0, 0, 255)");
-        const Red = new itowns.THREE.Color("rgb(255, 0, 0)");
-        const alpha = Math.min(255, Math.max(0,(p.temp-tempMin)/(tempMax-tempMin)));
-        return Blue.lerpHSL(Red, alpha);
-    }
-    });
-    // Use a FileSource to load a single file once
-    Temperature.source = new itowns.FileSource({
+  onMeshCreated: function(mesh) {
+    mesh.material.size = 100;
+  },
+  source: new itowns.FileSource({
     url: 'data/lambert_O_paris_centre.geojson',
-    projection: 'EPSG:2154',
+    crs: 'EPSG:2154',
     format: 'application/json',
-    zoom: { min: 0, max: 10 },
-});
-view.addLayer(Temperature).then(function menu(layer) {
-    var gui = debug.GeometryDebug.createGeometryDebugUI(menuGlobe.gui, view, layer);
-    debug.GeometryDebug.addWireFrameCheckbox(gui, view, layer);
+  }),
+  crs: 'EPSG:2154',
+  update: itowns.FeatureProcessing.update,
+  convert: itowns.Feature2Mesh.convert({
+    color: function(p) {
+      const tempMin = 290;
+      const tempMax = 330;
+      const Blue = new itowns.THREE.Color("rgb(0, 0, 255)");
+      const Red = new itowns.THREE.Color("rgb(255, 0, 0)");
+      const alpha = Math.min(255, Math.max(0,(p.temp-tempMin)/(tempMax-tempMin)));
+      return Blue.lerpHSL(Red, alpha);
+    }
+  }),
+  zoom: { min: 0 }
 });
 ```
 
 ## License
 
-> TODO
+This project is licenced under MIT. Incorporated libraries are published under their original licences.
 
+See LICENSE.md for more information
