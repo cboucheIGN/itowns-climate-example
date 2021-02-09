@@ -8,6 +8,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+    <style>
+      #documentation {
+        z-index: 2;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        overflow: hidden;
+        color: #eee;
+        background: #1a1a1a;
+        opacity: 0.8;
+        padding: 10px;
+      }
+    </style>
   </head>
   <body>
     <div id="description">
@@ -21,7 +34,12 @@
         <li>T: orient camera to a top view</li>
         <li>Y: move camera to start position</li>
       </ul>
-      <a href="https://github.com/cboucheIGN/netcdf-itowns">Project Github</a>
+    </div>
+    <div id="documentation">
+      <p>
+        See documentation on
+        <a href="https://github.com/cboucheIGN/netcdf-itowns">Github</a>
+      </p>
     </div>
     <div id="viewerDiv" class="viewer"></div>
     <script src="dist/itowns.js"></script>
