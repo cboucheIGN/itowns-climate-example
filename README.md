@@ -8,7 +8,7 @@ This is a living project and the logical steps proposed here can evolve to adapt
 
 ## Example
 
-See the example for [Paris](https://cboucheign.github.io/netcdf-itowns/)
+See the example for [Paris](https://cboucheign.github.io/itowns-climate-example/)
 
 ![itowns_screenshot.png](doc/itowns_screenshot.png)
 
