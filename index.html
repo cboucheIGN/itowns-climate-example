@@ -16,7 +16,7 @@
 
 <nav class="scroll-section">
     <a href="/">
-        <img src="doc/images/itowns_logo_300x134.png" width="245px"/>
+        <img src="doc/itowns_logo_300x134.png" width="245px"/>
     </a>
 </nav>
 
@@ -78,7 +78,7 @@
 
     function onLoad() {
         // Get the configuration
-        fetch('./config.json').then(function _(response) {
+        fetch('./examples/config.json').then(function _(response) {
             return response.json();
         }).then(function _(config) {
             initNavigation(config);
