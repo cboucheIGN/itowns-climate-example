@@ -40,7 +40,7 @@
             var url = document.location.href.replace('#', '') + '.html';
             goTo(url);
         } else {
-            goTo('view_3d_map.html');
+            goTo('examples/map_netcdf_temp.html');
         }
     }
 
@@ -50,7 +50,7 @@
         iframe.src = url.replace('index.html', '');
         iframe.focus();
 
-        var viewSrc = '<a href="https://github.com/iTowns/itowns/blob/master/examples/';
+        var viewSrc = '<a href="https://github.com/cboucheIGN/itowns-climate-example/blob/master/examples/';
         viewSrc += window.location.hash.substr(1) || 'view_3d_map';
         viewSrc += '.html" target="_blank">View source</a>';
         document.getElementById('view-source').innerHTML = viewSrc;

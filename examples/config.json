@@ -4,6 +4,6 @@
         "map_urban_heat": "Urban 'heat island' effect"
     },
     "Immersive view": {
-        "immersive_netcdf": "Immersive view"
+        "immersive_netcdf": "NetCDF Temperature"
     }
 }
