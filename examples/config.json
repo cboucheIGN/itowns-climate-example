@@ -1,0 +1,9 @@
+{
+    "2.5 Map": {
+        "map_netcdf_temp": "NetCDF Temperature",
+        "map_urban_heat": "Urban 'heat island' effect"
+    },
+    "Immersive view": {
+        "immersive_netcdf": "Immersive view"
+    }
+}
