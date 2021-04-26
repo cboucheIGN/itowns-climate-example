@@ -92,7 +92,7 @@
               mesh.material.size = 100;
             },
             source: new itowns.FileSource({
-              url: 'data/lambert_O_paris_centre.geojson',
+              url: '../data/lambert_O_paris_centre.geojson',
               crs: 'EPSG:2154',
               format: 'application/json',
             }),
@@ -116,24 +116,7 @@
             debug.GeometryDebug.addWireFrameCheckbox(gui, view, layer);
           });
 
-          // Add one imagery layer to the scene
-          // This layer is defined in a json file but it could be defined as a plain js
-          // object. See Layer* for more info.
-          itowns.Fetcher.json('./layers/JSONLayers/Ortho.json').then(function _(config) {
-              config.source = new itowns.WMTSSource(config.source);
-              var layer = new itowns.ColorLayer('Ortho', config);
-              view.addLayer(layer).then(menuGlobe.addLayerGUI.bind(menuGlobe));
-          });
-
-          // Add two elevation layers.
-          // These will deform iTowns globe geometry to represent terrain elevation.
-          function addElevationLayerFromConfig(config) {
-              config.source = new itowns.WMTSSource(config.source);
-              var layer = new itowns.ElevationLayer(config.id, config);
-              view.addLayer(layer).then(menuGlobe.addLayerGUI.bind(menuGlobe));
-          }
-          itowns.Fetcher.json('./layers/JSONLayers/IGN_MNT_HIGHRES.json').then(addElevationLayerFromConfig);
-
+        
           function altitudeBuildings(properties) {
               // I set altitude building 3 meters down, to be sure building is anchored in the ground
               return properties.z_min - properties.hauteur - 3;

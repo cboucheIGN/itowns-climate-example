@@ -29,7 +29,7 @@
             navLinks[i].addEventListener('click', function(e) {
                 e.preventDefault();
                 var target = e.target.localName === 'b' ? e.target.parentNode : e.target;
-                var url = target.href.replace('#', '') + '.html';
+                var url = target.href.replace('#', 'examples') + '.html';
                 var slug = target.hash;
                 goTo(url, slug);
             });
@@ -37,7 +37,7 @@
 
         // load page if setted
         if (document.location.hash) {
-            var url = document.location.href.replace('#', '') + '.html';
+            var url = document.location.href.replace('#', 'examples') + '.html';
             goTo(url);
         } else {
             goTo('examples/map_netcdf_temp.html');
