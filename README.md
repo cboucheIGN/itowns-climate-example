@@ -49,7 +49,7 @@ In QGIS 3.* (NetCDF Browser peut-être à installer moi j'ai pas eu besoin)
 
 ### 1.2 CSV to GeoJSON
 
-Edit the following [script](../data/csv2geoJson.py) with your csv files.
+Edit the following [script](./data/csv2geoJson.py) with your csv files.
 
 ### 1.3 Appendix : compute Meso-NH and TEB height
 
